@@ -84,7 +84,7 @@ motionDictionary = {
     "claw_release" : clawReleaseCommand,
     "setup_power": clawSetUpPower
 }
-#catchPower=90 #90
+catchPower=0 #90
 isCatchEnabled = False
 def setCatchPower(powerMsg):
     global catchPower, isCatchEnabled, pwm, counterPatternRepeats
