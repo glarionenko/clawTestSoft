@@ -128,7 +128,7 @@ def motion(command):
         os.system("sudo shutdown -h now")
 
 #mqtt auth
-broker="ocalhost"
+broker="127.0.0.1"
 port=1883
 
 #mqtt handlers
