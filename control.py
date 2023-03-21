@@ -2,6 +2,7 @@ import RPi.GPIO as GPIO
 from time import sleep
 import paho.mqtt.client as paho
 from time import *
+import os
 counterPatternRepeats = 0
 #GPIO configurable, motion parameters
 clawMaxOperatingTime = 2.2
@@ -70,6 +71,7 @@ stopAllMovmentsCommand = -1
 clawCatchCommand = -2
 clawReleaseCommand = -3
 clawSetUpPower = -4
+shutdownRuspberry = -5
 pinEnabler=GPIO.HIGH
 pinDisabler=GPIO.LOW
 motionDictionary = {
@@ -82,7 +84,8 @@ motionDictionary = {
     "claw_stop" : stopAllMovmentsCommand,
     "claw_catch" : clawCatchCommand,
     "claw_release" : clawReleaseCommand,
-    "setup_power": clawSetUpPower
+    "setup_power": clawSetUpPower,
+    "shutdown_raspberry": shutdownRuspberry
 }
 catchPower=0 #90
 isCatchEnabled = False
@@ -120,6 +123,9 @@ def motion(command):
             sleep(0.3)
             GPIO.output(EMPinRelay, GPIO.LOW)
             isCatchEnabled = False
+    if(pin==shutdownRuspberry):
+        resetAllPins()
+        os.system("sudo shutdown -h now")
 
 #mqtt auth
 broker="10.0.10.111"
