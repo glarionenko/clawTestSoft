@@ -189,6 +189,7 @@ servoUpSwitchPinState = 1
 def sendIfNotEqual(oldValue,newValue,pin):
     global endSwitchDictionary, client1
     if(compareValues(oldValue, newValue)==False):
+        print("not equal")
         client1.publish("claw/info/"+get_key(pin),str(newValue),qos=1)
 def compareValues(oldValue, newValue):
     if(oldValue!=newValue):
