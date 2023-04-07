@@ -244,6 +244,7 @@ def firstPattern():
 try:
     while True:
         sleep(0.1)
+        readEndSwitches()
         #firstPattern()
 
 except KeyboardInterrupt:
