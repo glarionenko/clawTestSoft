@@ -87,6 +87,7 @@ motionDictionary = {
     "setup_power": clawSetUpPower,
     "shutdown_raspberry": shutdownRuspberry
 }
+
 catchPower=0 #90
 isCatchEnabled = False
 def setCatchPower(powerMsg):
@@ -163,6 +164,20 @@ client1.connect(broker,port)
 client1.loop_start()
 client1.subscribe("claw/#")
 
+def get_key(val):
+    for key, value in endSwitchDictionary.items():
+        if val == value:
+            return key
+    return "key doesn't exist"
+
+endSwitchDictionary = {
+    "right-end" : servoRightSwitchPin,
+    "left-end" : servoLeftSwitchPin,
+    "up-end" : clawUpSwitchPin,
+    "down-end" : clawDownSwitchPin,
+    "forward-end" : servoUpSwitchPin
+}
+
 continuouslySendSensorValues = False
 endSwitchPressedValue = 0
 
@@ -171,16 +186,30 @@ clawUpSwitchPinState = 1
 servoRightSwitchPinState = 1
 servoLeftSwitchPinState = 1
 servoUpSwitchPinState = 1
+def sendIfNotEqual(oldValue,newValue,pin):
+    global endSwitchDictionary, client1
+    if(compareValues(oldValue, newValue)==False):
+        client1.publish("claw/info/"+get_key(pin),str(newValue),qos=1)
+def compareValues(oldValue, newValue):
+    if(oldValue!=newValue):
+        return False
+    return True
+
 def readEndSwitches():
     global endSwitchPressedValue, clawDownSwitchPinState,clawUpSwitchPinState,servoRightSwitchPinState 
-    global servoLeftSwitchPinState, servoUpSwitchPinState
-    clawDownSwitchPinState = GPIO.input(clawUpSwitchPin)
-    clawUpSwitchPinState = GPIO.input(clawUpSwitchPin)
-    servoRightSwitchPinState = GPIO.input(clawUpSwitchPin)
-    servoLeftSwitchPinState = GPIO.input(clawUpSwitchPin)
-    servoUpSwitchPinState = GPIO.input(clawUpSwitchPin)
-    if(continuouslySendSensorValues):
-        client1.publish("claw/endSwitches/clawUpSwitchPinState",str(clawUpSwitchPinState),qos=1)
+    global servoLeftSwitchPinState, servoUpSwitchPinState, client1
+    clawDownSwitchPinStateNew = GPIO.input(clawDownSwitchPin)
+    clawUpSwitchPinStateNew = GPIO.input(clawUpSwitchPin)
+    servoRightSwitchPinStateNew = GPIO.input(servoRightSwitchPin)
+    servoLeftSwitchPinStateNew = GPIO.input(servoLeftSwitchPin)
+    servoUpSwitchPinStateNew = GPIO.input(servoUpSwitchPin)
+    sendIfNotEqual(clawDownSwitchPinState,clawDownSwitchPinStateNew,clawDownSwitchPin)
+    sendIfNotEqual(clawUpSwitchPinState,clawUpSwitchPinStateNew,clawUpSwitchPin)
+    sendIfNotEqual(servoRightSwitchPinState,servoRightSwitchPinStateNew,servoRightSwitchPin)
+    sendIfNotEqual(servoLeftSwitchPinState,servoLeftSwitchPinStateNew,servoLeftSwitchPin)
+    sendIfNotEqual(servoUpSwitchPinState,servoUpSwitchPinStateNew,servoUpSwitchPin)
+
+
 
 
 #GPIO.setup(clawDownSwitchPin,GPIO.IN)
