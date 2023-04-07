@@ -7,7 +7,7 @@ counterPatternRepeats = 0
 #GPIO configurable, motion parameters
 clawMaxOperatingTime = 2.2
 servoMaxOperatingTime = 7000
-
+#test commit from rpi prod
 clawDownSwitchPin = 5
 clawUpSwitchPin = 7
 servoRightSwitchPin = 11
