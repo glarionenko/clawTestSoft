@@ -169,7 +169,7 @@ client1.subscribe("claw/#")
 
 continuouslySendSensorValues = False
 
-endSwitchPin =[clawDownSwitchPin,clawUpSwitchPin,servoRightSwitchPin,servoLeftSwitchPin,servoUpSwitchPin]
+endSwitchPin =[[clawDownSwitchPin],[clawUpSwitchPin],[servoRightSwitchPin],[servoLeftSwitchPin],[servoUpSwitchPin]]
 endSwitchTopic= ["down-end","up-end", "right-end","left-end","forward-end" ]
 endSwitchOldValue=[1,1,1,1,1]
 endSwitchNewValue=[1,1,1,1,1]
@@ -179,7 +179,7 @@ def readEndSwitches():
     global servoLeftSwitchPinState, servoUpSwitchPinState, client1
     clawDownSwitchPinStateNew = GPIO.input(clawDownSwitchPin)
     for index, pin in endSwitchPin:
-       endSwitchNewValue[index] = GPIO.input(pin)
+       endSwitchNewValue[index] = GPIO.input(pin[0])
        if(endSwitchNewValue[index]!=endSwitchOldValue[index]):
            endSwitchOldValue[index]=endSwitchNewValue[index]
            client1.publish("claw/info/"+endSwitchTopic[index],str(endSwitchNewValue[index]),qos=1)
