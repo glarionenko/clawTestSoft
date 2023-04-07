@@ -178,7 +178,7 @@ def readEndSwitches():
     global endSwitchPressedValue, clawDownSwitchPinState,clawUpSwitchPinState,servoRightSwitchPinState 
     global servoLeftSwitchPinState, servoUpSwitchPinState, client1
     clawDownSwitchPinStateNew = GPIO.input(clawDownSwitchPin)
-    for index, pin in endSwitchPin:
+    for index, pin in enumerate(endSwitchPin):
        endSwitchNewValue[index] = GPIO.input(pin)
        if(endSwitchNewValue[index]!=endSwitchOldValue[index]):
            endSwitchOldValue[index]=endSwitchNewValue[index]
