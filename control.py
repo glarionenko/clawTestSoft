@@ -164,51 +164,26 @@ client1.connect(broker,port)
 client1.loop_start()
 client1.subscribe("claw/#")
 
-def get_key(val):
-    for key, value in endSwitchDictionary.items():
-        if val == value:
-            return key
-    return "key doesn't exist"
 
-endSwitchDictionary = {
-    "right-end" : servoRightSwitchPin,
-    "left-end" : servoLeftSwitchPin,
-    "up-end" : clawUpSwitchPin,
-    "down-end" : clawDownSwitchPin,
-    "forward-end" : servoUpSwitchPin
-}
+
 
 continuouslySendSensorValues = False
-endSwitchPressedValue = 0
 
-clawDownSwitchPinState = 1
-clawUpSwitchPinState = 1
-servoRightSwitchPinState = 1
-servoLeftSwitchPinState = 1
-servoUpSwitchPinState = 1
-def sendIfNotEqual(oldValue,newValue,pin):
-    global endSwitchDictionary, client1
-    if(compareValues(oldValue, newValue)==False):
-        print("not equal")
-        client1.publish("claw/info/"+get_key(pin),str(newValue),qos=1)
-def compareValues(oldValue, newValue):
-    if(oldValue!=newValue):
-        return False
-    return True
+endSwitchPin =[clawDownSwitchPin,clawUpSwitchPin,servoRightSwitchPin,servoLeftSwitchPin,servoUpSwitchPin]
+endSwitchTopic= ["down-end","up-end", "right-end","left-end","forward-end" ]
+endSwitchOldValue=[1,1,1,1,1]
+endSwitchNewValue=[1,1,1,1,1]
 
 def readEndSwitches():
     global endSwitchPressedValue, clawDownSwitchPinState,clawUpSwitchPinState,servoRightSwitchPinState 
     global servoLeftSwitchPinState, servoUpSwitchPinState, client1
     clawDownSwitchPinStateNew = GPIO.input(clawDownSwitchPin)
-    clawUpSwitchPinStateNew = GPIO.input(clawUpSwitchPin)
-    servoRightSwitchPinStateNew = GPIO.input(servoRightSwitchPin)
-    servoLeftSwitchPinStateNew = GPIO.input(servoLeftSwitchPin)
-    servoUpSwitchPinStateNew = GPIO.input(servoUpSwitchPin)
-    sendIfNotEqual(clawDownSwitchPinState,clawDownSwitchPinStateNew,clawDownSwitchPin)
-    sendIfNotEqual(clawUpSwitchPinState,clawUpSwitchPinStateNew,clawUpSwitchPin)
-    sendIfNotEqual(servoRightSwitchPinState,servoRightSwitchPinStateNew,servoRightSwitchPin)
-    sendIfNotEqual(servoLeftSwitchPinState,servoLeftSwitchPinStateNew,servoLeftSwitchPin)
-    sendIfNotEqual(servoUpSwitchPinState,servoUpSwitchPinStateNew,servoUpSwitchPin)
+    for index, pin in endSwitchPin:
+       endSwitchNewValue[index] = GPIO.input(pin)
+       if(endSwitchNewValue[index]!=endSwitchOldValue[index]):
+           endSwitchOldValue[index]=endSwitchNewValue[index]
+           client1.publish("claw/info/"+endSwitchTopic[index],str(endSwitchNewValue[index]),qos=1)
+
 
 
 
