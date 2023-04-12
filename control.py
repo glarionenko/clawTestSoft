@@ -170,7 +170,7 @@ client1.subscribe("claw/#")
 continuouslySendSensorValues = False
 
 endSwitchPin =[clawDownSwitchPin,clawUpSwitchPin,servoRightSwitchPin,servoLeftSwitchPin,servoUpSwitchPin]
-endSwitchTopic= ["down-end","up-end", "right-end","left-end","forward-end" ]
+endSwitchTopic= ["down_end","up_end", "right_end","left_end","forward_end" ]
 endSwitchOldValue=[1,1,1,1,1]
 endSwitchNewValue=[1,1,1,1,1]
 
